@@ -7,5 +7,6 @@ export class CreateCvDto {
   title: string;
   @IsNotEmpty()
   description: string;
-
+  name: string;
+  job: string;
 }

@@ -4,6 +4,11 @@ import { AppService } from './app.service';
 import { CvModule } from './cv/cv.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm' ;
 import { AuthModule } from './auth/auth.module';
+import { ProjectModule } from './project/project.module';
+import { UserModule } from './user/user.module';
+import { DepartementController } from './departement/departement.controller';
+import { DepartementService } from './departement/departement.service';
+import { DepartementModule } from './departement/departement.module';
 
 const ormOptions: TypeOrmModuleOptions = {
     type: 'mysql',
@@ -19,8 +24,8 @@ const ormOptions: TypeOrmModuleOptions = {
 };
 
 @Module({
-  imports: [CvModule, TypeOrmModule.forRoot(ormOptions), AuthModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [CvModule, ProjectModule, TypeOrmModule.forRoot(ormOptions), AuthModule, ProjectModule, UserModule, DepartementModule],
+  controllers: [AppController, DepartementController],
+  providers: [AppService, DepartementService],
 })
 export class AppModule {}

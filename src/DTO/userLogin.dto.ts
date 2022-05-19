@@ -5,4 +5,5 @@ export class UserLoginDto {
   username: string;
   @IsNotEmpty()
   password: string;
+  
 }

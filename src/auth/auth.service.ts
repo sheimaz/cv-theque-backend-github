@@ -15,7 +15,7 @@ export class AuthService {
   }
 
   async registerUser(registerDTO: RegisterUserDto) {
-    const {username, password} = registerDTO;
+    const {username, password,role,job,departement} = registerDTO;
     const hashed = await bcrypt.hash(password, 12);
     const salt = await bcrypt.getSalt(hashed);
 
@@ -28,7 +28,9 @@ export class AuthService {
     const user = new UserEntity();
     user.username = username;
     user.password = hashed;
-    user.salt = salt;
+    user.role= role;
+    user.departement=departement;
+    user.job=job;
 
     this.repo.create(user);
 

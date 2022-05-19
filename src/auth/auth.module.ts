@@ -23,7 +23,7 @@ import { JwtCustomStrategy } from "./jwt-custom.strategy";
   ],
   providers: [AuthService, JwtCustomStrategy],
   controllers: [AuthController],
-  exports: [PassportModule, JwtCustomStrategy]
+  exports: [PassportModule, JwtCustomStrategy, AuthService]
 })
 export class AuthModule {
 }
