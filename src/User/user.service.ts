@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity, UserRole } from "../Entity/user.entity";
 import { Repository } from "typeorm";
@@ -10,10 +10,15 @@ export class UserService {
   }
 
 
-  async getAllUsers() {
+  async getAllUsers(user: UserEntity) {
+    if (user.role==UserRole.ADMIN) {
+
     return await this.repo.find();
   }
-
+  else{
+    throw new UnauthorizedException('Not authorized');
+  }
+  }
   
   /**async createUser(username: string, job: string, password: string){
     const user = new UserEntity();

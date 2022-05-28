@@ -3,7 +3,8 @@ import { UserService } from './user.service';
 import { RegisterUserDto } from "../DTO/registerUser.dto";
 import { AuthService } from 'src/auth/auth.service';
 import { AuthGuard } from "@nestjs/passport";
-import { UserRole } from 'src/Entity/user.entity';
+import { UserEntity, UserRole } from 'src/Entity/user.entity';
+import { User } from 'src/auth/user.decorator';
 
 // http://localhost:3000/users
 @Controller('users')
@@ -17,9 +18,9 @@ export class UserController {
 
     // http GET verb
     @Get()
-    getAllUsers() {
+    getAllUsers(@User() user: UserEntity) {
       // console.log(this.userService.getAllUsers());
-      return this.userService.getAllUsers();
+      return this.userService.getAllUsers(user);
     }
     
    // http POST verb

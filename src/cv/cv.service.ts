@@ -1,9 +1,9 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CvEntity } from "../Entity/cv.entity";
 import { Repository } from "typeorm";
 import { CreateCvDto } from "../DTO/create-cv.dto";
-import { UserEntity } from "../Entity/user.entity";
+import { UserEntity, UserRole } from "../Entity/user.entity";
 
 
 @Injectable()
@@ -12,11 +12,15 @@ export class CvService {
   constructor(@InjectRepository(CvEntity) private repo: Repository<CvEntity>) {
   }
 
-
+//affiche la liste des cvs
   async getAllCvs(user: UserEntity) {
+      if (user.role==UserRole.TEAMLEAD) {
+
+        
+      
       const query = await this.repo.createQueryBuilder('cv');
 
-      query.where(`cv.userId = :userId`, {userId: user.id});
+      //query.where(`cv.userId = :userId`, {userId: user.id});
 
       try {
         return await query.getMany();
@@ -26,7 +30,30 @@ export class CvService {
 
 
     }
+  else{
+    throw new UnauthorizedException('Not authorized');
+  }}
+  //get just your cv
+ /*async getMyCv(user: UserEntity) {
+  if (user.role==UserRole.COLLABORATEUR) {
 
+        
+      
+    const query = await this.repo.createQueryBuilder('cv');
+    query.where(`cv.userId = :userId`, {userId: user.id});
+
+    try {
+      return await query.getMany();
+    } catch (err) {
+      throw new NotFoundException('No cv found');
+    }
+
+
+  }
+else{
+  throw new UnauthorizedException('Not authorized');
+}}*/
+//create cv
   async createCv(createCvDTO: CreateCvDto, user: UserEntity){
     const cv = new CvEntity();
     const {title, description} = createCvDTO;

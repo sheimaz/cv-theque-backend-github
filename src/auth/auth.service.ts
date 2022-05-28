@@ -57,7 +57,7 @@ export class AuthService {
     if (isPasswordMatch) {
      const jwtPayload = {username};
      const jwtToken = await this.jwt.signAsync(jwtPayload, {expiresIn: '1d', algorithm: 'HS512'});
-     return {token: jwtToken};
+     return {token: jwtToken, role:user.role};
     } else {
       throw new UnauthorizedException('Invalid credentials.');
     }

@@ -1,7 +1,5 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import * as bcrypt from 'bcryptjs';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CvEntity } from "./cv.entity";
-import { DepartementController } from "src/departement/departement.controller";
 
 export enum UserRole {
   COLLABORATEUR = 'Collaborateur',
@@ -48,7 +46,7 @@ export class UserEntity {
   @Column({type: 'enum', enum: UserRole, default: UserRole.COLLABORATEUR})
     role: UserRole;
 
-  @OneToMany(() => CvEntity, (cv) => cv.user )
+  @OneToOne(() => CvEntity, (cv) => cv.user )
   cvs: CvEntity[]
   
   @Column({type: 'enum', enum: Departement, default: Departement.DIGIX})
