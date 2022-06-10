@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CvEntity } from "./cv.entity";
+import { UserEntity } from "./user.entity";
 
 
 @Entity('projects')
@@ -16,6 +17,8 @@ export class ProjectEntity {
   status: ProjectStatus;
   @ManyToOne(() => CvEntity, (cv) => cv.project)
   cv: CvEntity;
+  @ManyToMany(() => UserEntity, (user) => user.project)
+  user: UserEntity;
 }
 export enum ProjectStatus {
   OPEN = 'OPEN',

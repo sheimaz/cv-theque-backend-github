@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CvEntity } from "./cv.entity";
+import { ProjectEntity } from "./project.entity";
 
 export enum UserRole {
   COLLABORATEUR = 'Collaborateur',
@@ -48,6 +49,9 @@ export class UserEntity {
 
   @OneToOne(() => CvEntity, (cv) => cv.user )
   cvs: CvEntity[]
+  
+  @ManyToMany(() =>   ProjectEntity, (project) => project.user )
+  project: ProjectEntity[]
   
   @Column({type: 'enum', enum: Departement, default: Departement.DIGIX})
   departement: Departement;
