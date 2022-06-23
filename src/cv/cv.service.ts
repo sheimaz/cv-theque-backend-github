@@ -1,40 +1,33 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { CvEntity } from "../Entity/cv.entity";
-import { Repository } from "typeorm";
-import { CreateCvDto } from "../DTO/create-cv.dto";
-import { UserEntity, UserRole } from "../Entity/user.entity";
-
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CvEntity } from '../Entity/cv.entity';
+import { Repository } from 'typeorm';
+import { CreateCvDto } from '../DTO/create-cv.dto';
+import { UserEntity, UserRole } from '../Entity/user.entity';
 
 @Injectable()
 export class CvService {
+  constructor(@InjectRepository(CvEntity) private repo: Repository<CvEntity>) {}
 
-  constructor(@InjectRepository(CvEntity) private repo: Repository<CvEntity>) {
-  }
-
-//affiche la liste des cvs
+  //affiche la liste des cvs
   async getAllCvs(user: UserEntity) {
-      if (user.role==UserRole.TEAMLEAD) {
+    const query = await this.repo.createQueryBuilder('cv');
 
-        
-      
-      const query = await this.repo.createQueryBuilder('cv');
+    //query.where(`cv.userId = :userId`, {userId: user.id});
 
-      //query.where(`cv.userId = :userId`, {userId: user.id});
-
-      try {
-        return await query.getMany();
-      } catch (err) {
-        throw new NotFoundException('No cv found');
-      }
-
-
+    try {
+      return await query.getMany();
+    } catch (err) {
+      throw new NotFoundException('No cv found');
     }
-  else{
-    throw new UnauthorizedException('Not authorized');
-  }}
+  }
   //get just your cv
- /*async getMyCv(user: UserEntity) {
+  /*async getMyCv(user: UserEntity) {
   if (user.role==UserRole.COLLABORATEUR) {
 
         
@@ -53,43 +46,41 @@ export class CvService {
 else{
   throw new UnauthorizedException('Not authorized');
 }}*/
-//create cv
-  async createCv(createCvDTO: CreateCvDto, user: UserEntity){
+  //create cv
+  async createCv(createCvDTO: CreateCvDto, user: UserEntity) {
     const cv = new CvEntity();
-    const {title, description} = createCvDTO;
+    console.log(createCvDTO);
+    const { title, description } = createCvDTO;
     cv.title = title;
     cv.description = description;
     cv.userId = user.id;
 
-
     this.repo.create(cv);
     try {
-          return await this.repo.save(cv);
-        } catch (err) {
-          console.log(err.stack);
-          throw new InternalServerErrorException('Something went wrong, cv not created');
-        }
-  }
-   async update(id: number, user: UserEntity) {
-      try {
-        await this.repo.update({id}, {userId: user.id});
-        return this.repo.findOne({id});
-      } catch (err) {
-        throw new InternalServerErrorException('Something went wrong');
-      }
-
+      return await this.repo.save(cv);
+    } catch (err) {
+      console.log(err.stack);
+      throw new InternalServerErrorException(
+        'Something went wrong, cv not created',
+      );
     }
+  }
+  async update(id: number, user: UserEntity) {
+    try {
+      await this.repo.update({ id }, { userId: user.id });
+      return this.repo.findOne({ id });
+    } catch (err) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
 
-    async delete(id: number, user: UserEntity) {
-       const result = await this.repo.delete({id, userId: user.id});
+  async delete(id: number, user: UserEntity) {
+    const result = await this.repo.delete({ id, userId: user.id });
 
-       if (result.affected === 0) {
-         throw new NotFoundException('Cv not deleted');
-       } else {
-         return { success: true}
-       }
-
-
-
-   }
+    if (result.affected === 0) {
+      throw new NotFoundException('Cv not deleted');
+    } else {
+      return { success: true };
+    }
+  }
 }
